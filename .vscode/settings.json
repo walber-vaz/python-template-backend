@@ -1,0 +1,44 @@
+{
+    "files.eol": "\n",
+    "[python]": {
+        "editor.rulers": [
+            79,
+            120
+        ],
+        "editor.tabSize": 4,
+        "editor.formatOnPaste": true,
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.codeActionsOnSave": {
+            "source.fixAll.ruff": "explicit",
+            "source.organizeImports.ruff": "explicit"
+        }
+    },
+    "python.analysis.autoImportCompletions": true,
+    "python.languageServer": "Pylance",
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "python.testing.pytestArgs": [
+        "-s",
+        "-vv",
+        "-x",
+    ],
+    "pylint.args": [
+        "--errors-only",
+        "--max-line-length=88",
+        "--disable=C0114,C0115,C0116,C0103,R0903,E0401,E1101,E1102"
+    ],
+    "flake8.args": [
+        "--max-line-length=88",
+        "--ignore=E203"
+    ],
+    // "python.analysis.typeCheckingMode": "basic",
+    "black-formatter.args": [
+        "--line-length",
+        "88",
+        "--skip-string-normalization"
+    ],
+    "python.venvPath": ".venv",
+    "python.defaultInterpreterPath": ".venv/bin/python",
+    "python.terminal.activateEnvInCurrentTerminal": true,
+}

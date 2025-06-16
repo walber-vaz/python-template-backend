@@ -1,0 +1,90 @@
+[project]
+name = "python-template-backend"
+version = "0.0.1"
+description = "Template backend application using FastAPI, SQLAlchemy, and Alembic."
+readme = "README.md"
+requires-python = ">=3.13, <4.0"
+dependencies = [
+    "alembic>=1.16.1",
+    "fastapi[standard]>=0.115.12",
+    "httpx>=0.28.1",
+    "psycopg[binary]>=3.2.9",
+    "pwdlib[argon2]>=0.2.1",
+    "pydantic-settings>=2.9.1",
+    "pyjwt>=2.10.1",
+    "sqlalchemy[asyncio]>=2.0.41",
+    "types-jwt>=0.1.3",
+]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.2.0",
+    "pyright>=1.1.401",
+    "pytest>=8.4.0",
+    "pytest-cov>=6.1.1",
+    "ruff>=0.11.13",
+    "taskipy>=1.14.1",
+]
+
+[tool.ruff]
+line-length = 79
+extend-exclude = ['migrations']
+target-version = "py313"
+fix = true
+show-fixes = true
+indent-width = 4
+
+[tool.ruff.lint]
+preview = true
+select = ['I', 'F', 'E', 'W', 'PL', 'PT']
+
+[tool.ruff.format]
+preview = true
+quote-style = 'single'
+indent-style = "space"
+line-ending = "lf"
+
+[tool.ruff.lint.isort]
+known-first-party = ['app']
+
+[tool.pytest.ini_options]
+pythonpath = "."
+addopts = '-p no:warnings'
+
+[tool.pyright]
+typeCheckingMode = "strict"
+pythonVersion = "3.13"
+include = ["src", 'tests']
+exclude = [
+    "**/venv",
+    "**/.venv",
+    "**/env",
+    "**/.env",
+    "**/node_modules",
+    "**/__pycache__",
+]
+venv = ".venv"
+venvPath = "."
+executionEnvironments = [{ root = "src" }]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.taskipy.tasks]
+lint = 'ruff check'
+pre_format = 'ruff check --fix'
+format = 'ruff format'
+run = 'fastapi dev src/app/main.py'
+pre_test = 'task lint'
+test = 'pytest -s -x --cov=src/app -vv'
+post_test = 'coverage html'
+makemigrations = 'alembic revision --autogenerate -m'
+migrate = 'alembic upgrade head'
+rollback = 'alembic downgrade -1'
