@@ -1,0 +1,9 @@
+services:
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_DBS=db_data,db_data_test
