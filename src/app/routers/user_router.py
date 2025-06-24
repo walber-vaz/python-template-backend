@@ -2,17 +2,16 @@ from http import HTTPStatus
 from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database.session import get_async_session
+from app.routers.deps import get_user_service
 from app.schemas.response import Response
 from app.schemas.user.user_input_create import UserCreate, UserResponse
-from app.services import user_service
+from app.services.user.user_service_interface import IUserServiceInterface
 
-Session = Annotated[AsyncSession, Depends(get_async_session)]
 router = APIRouter(
     prefix='/users',
 )
+UserService = Annotated[IUserServiceInterface, Depends(get_user_service)]
 
 
 @router.post(
@@ -46,6 +45,7 @@ router = APIRouter(
     },
 )
 async def create_user(
-    user: UserCreate, session: Session
+    user: UserCreate,
+    user_service: UserService,
 ) -> Response[UserResponse]:
-    return await user_service.store(user, session)
+    return await user_service.store(user)
