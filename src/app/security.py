@@ -21,9 +21,11 @@ def create_access_token(data: Dict[str, Any]) -> str:
         'aud': settings.JWT_AUDIENCE,
     })
 
-    return encode(
+    token_decode = encode(
         to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM
-    ).decode('utf-8')
+    )
+
+    return str(token_decode, 'utf-8')
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
