@@ -44,6 +44,8 @@ filelock==3.18.0
     # via virtualenv
 greenlet==3.2.3
     # via sqlalchemy
+gunicorn==23.0.0
+    # via python-template-backend (pyproject.toml)
 h11==0.16.0
     # via
     #   httpcore
@@ -82,7 +84,9 @@ nodeenv==1.9.1
     #   pre-commit
     #   pyright
 packaging==25.0
-    # via pytest
+    # via
+    #   gunicorn
+    #   pytest
 platformdirs==4.3.8
     # via virtualenv
 pluggy==1.6.0

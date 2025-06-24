@@ -34,6 +34,8 @@ fastapi-cli==0.0.7
     # via fastapi
 greenlet==3.2.3
     # via sqlalchemy
+gunicorn==23.0.0
+    # via python-template-backend (pyproject.toml)
 h11==0.16.0
     # via
     #   httpcore
@@ -63,6 +65,8 @@ markupsafe==3.0.2
     #   mako
 mdurl==0.1.2
     # via markdown-it-py
+packaging==25.0
+    # via gunicorn
 psycopg==3.2.9
     # via python-template-backend (pyproject.toml)
 psycopg-binary==3.2.9
