@@ -30,7 +30,7 @@
     ],
     "flake8.args": [
         "--max-line-length=88",
-        "--ignore=E203"
+        "--ignore=E203,E704"
     ],
     // "python.analysis.typeCheckingMode": "basic",
     "black-formatter.args": [
