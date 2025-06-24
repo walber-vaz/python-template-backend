@@ -3,7 +3,9 @@ FROM python:3.13.5-bookworm AS builder
 RUN apt update && apt upgrade -y && \
     apt install -y --no-install-recommends \
     gcc libc6-dev curl ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
+    apt clean && \
+    apt autoremove -y
 
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
@@ -27,10 +29,20 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 FROM python:3.13.5-slim-bookworm AS prod
 
+ENV TZ=America/Sao_Paulo \
+    LANG=pt_BR.UTF-8 \
+    LANGUAGE=pt_BR:pt
+
 RUN apt update && apt upgrade -y && \
     apt install -y --no-install-recommends \
-    ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+    ca-certificates tzdata locales dumb-init && \
+    ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
+    echo $TZ > /etc/timezone && \
+    sed -i '/pt_BR.UTF-8/s/^# //g' /etc/locale.gen && \
+    locale-gen && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt clean && \
+    apt autoremove -y
 
 RUN addgroup --gid 1001 --system appuser && \
     adduser --gid 1001 --shell /bin/false --disabled-password --uid 1001 appuser && \
@@ -47,6 +59,19 @@ ENV PATH="/app/.venv/bin:$PATH" \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONPATH=/app/src
 
-CMD runserver -u appuser -- /app/.venv/bin/gunicorn \
-    --workers 4 --worker-class uvicorn.workers.UvicornWorker \
-    --bind 0.0.0.0:8000 --forwarded-allow-ips='*' --timeout=120 src.app.main:app
+EXPOSE 8000
+
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+
+CMD ["gunicorn", \
+     "--workers", "4", \
+     "--worker-class", "uvicorn.workers.UvicornWorker", \
+     "--bind", "0.0.0.0:8000", \
+     "--forwarded-allow-ips", "*", \
+     "--timeout", "120", \
+     "--keep-alive", "65", \
+     "--max-requests", "1000", \
+     "--max-requests-jitter", "100", \
+     "--access-logfile", "-", \
+     "--error-logfile", "-", \
+     "src.app.main:app"]
