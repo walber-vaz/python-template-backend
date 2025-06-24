@@ -3,17 +3,16 @@ from typing import Annotated, Any
 
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database.session import get_async_session
 from app.models.user import User
-from app.routers.deps import get_current_user
+from app.routers.deps import get_auth_service, get_current_user
 from app.schemas.response import Response
 from app.schemas.user.user_input_create import UserResponse
 from app.schemas.user.user_login_input import UserLoginInput, UserLoginResponse
-from app.services import auth_service
+from app.services.auth import IAuthServiceInterface
 
-Session = Annotated[AsyncSession, Depends(get_async_session)]
+AuthService = Annotated[IAuthServiceInterface, Depends(get_auth_service)]
+CurrentUser = Annotated[User, Depends(get_current_user)]
 router = APIRouter(prefix='/auth')
 
 
@@ -47,7 +46,7 @@ router = APIRouter(prefix='/auth')
     },
 )
 async def user_login(
-    session: Session,
+    auth_service: AuthService,
     form_data: OAuth2PasswordRequestForm = Depends(),
 ) -> UserLoginResponse:
     login_input = UserLoginInput(
@@ -55,7 +54,6 @@ async def user_login(
     )
     return await auth_service.login(
         login_input=login_input,
-        session=session,
     )
 
 
@@ -76,9 +74,7 @@ async def user_login(
         },
     },
 )
-async def get_me(
-    current_user: User = Depends(get_current_user),
-) -> Response[UserResponse]:
+async def get_me(current_user: CurrentUser) -> Response[UserResponse]:
     return Response[UserResponse](
         data=UserResponse.model_validate(current_user),
         message='Usuário encontrado.',
