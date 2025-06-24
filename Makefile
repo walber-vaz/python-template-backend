@@ -1,5 +1,7 @@
 include .env
 
+$(eval export $(shell sed -ne 's/ *#.*$$//; /./ s/=.*$$// p' .env))
+
 .PHONY: help
 help:             ## Show the help.
 	@echo "Usage: make <target>"
