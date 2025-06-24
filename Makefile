@@ -1,6 +1,7 @@
-include .env
-
-$(eval export $(shell sed -ne 's/ *#.*$$//; /./ s/=.*$$// p' .env))
+ifneq (,$(wildcard .env))
+    include .env
+    $(eval export $(shell sed -ne 's/ *#.*$$//; /./ s/=.*$$// p' .env))
+endif
 
 .PHONY: help
 help:             ## Show the help.
@@ -8,6 +9,10 @@ help:             ## Show the help.
 	@echo ""
 	@echo "Targets:"
 	@fgrep "##" Makefile | fgrep -v fgrep
+
+.PHONY: install
+install:         ## Install the dependencies.
+	@uv sync
 
 .PHONY: clean
 clean:            ## Clean unused files.
@@ -46,5 +51,11 @@ docker-down:      ## Stop the Docker containers.
 
 .PHONY: dev
 dev: docker-up    ## Run the development server with Docker.
-	@echo "Starting development server..."
+	@if [ -z "$$VIRTUAL_ENV" ]; then \
+		echo "❌ Error: Please activate your virtual environment before running this command."; \
+		echo "💡 Tip: Run 'source .venv/bin/activate' or 'uv venv --seed && source .venv/bin/activate'"; \
+		exit 1; \
+	fi
+	@echo "✅ Virtual environment detected: $$VIRTUAL_ENV"
+	@echo "🚀 Starting development server..."
 	@fastapi dev src/app/main.py
