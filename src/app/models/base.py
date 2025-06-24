@@ -4,7 +4,7 @@ from sqlalchemy import DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 
-class SQLAlchemyBase:
+class UUIDTable:
     __abstract__ = True
 
     id: Mapped[UUID] = mapped_column(
@@ -15,6 +15,11 @@ class SQLAlchemyBase:
         server_default=func.gen_random_uuid(),
         init=False,
     )
+
+
+class TimestampedTable:
+    __abstract__ = True
+
     created_at: Mapped[DateTime] = mapped_column(
         DateTime(timezone=True),
         nullable=False,
