@@ -2,11 +2,11 @@ from sqlalchemy import String, text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import table_registry
-from app.models.base import SQLAlchemyBase
+from app.models.base import TimestampedTable, UUIDTable
 
 
 @table_registry.mapped_as_dataclass
-class User(SQLAlchemyBase):
+class User(UUIDTable, TimestampedTable):
     __tablename__ = 'tb_users'
 
     email: Mapped[str] = mapped_column(
