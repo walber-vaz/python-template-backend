@@ -31,3 +31,4 @@ Thumbs.db
 *.key
 *.pem
 secrets/
+requirements-dev.txt
