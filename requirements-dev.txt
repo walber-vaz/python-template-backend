@@ -153,7 +153,7 @@ sqlalchemy==2.0.41
     # via
     #   python-template-backend (pyproject.toml)
     #   alembic
-starlette==0.46.2
+starlette==0.47.2
     # via fastapi
 taskipy==1.14.1
     # via python-template-backend (pyproject.toml:dev)
