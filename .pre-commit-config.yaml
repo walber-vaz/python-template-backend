@@ -13,7 +13,7 @@ repos:
       - id: double-quote-string-fixer
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.12.0
+    rev: v0.12.5
     hooks:
       - id: ruff
         args: [--fix]
@@ -32,7 +32,7 @@ repos:
         name: Export requirements
         language: system
         pass_filenames: false
-        entry: uv pip compile pyproject.toml -o requirements.txt
+        entry: sh -c "uv pip compile pyproject.toml -o requirements.txt && git add requirements.txt"
         files: ^(pyproject.toml|uv.lock)$
 
   - repo: local
@@ -41,9 +41,8 @@ repos:
         name: Export requirements dev
         language: system
         pass_filenames: false
-        entry: uv pip compile pyproject.toml --group dev -o requirements-dev.txt
+        entry: sh -c "uv pip compile pyproject.toml --group dev -o requirements-dev.txt && git add requirements-dev.txt"
         files: ^(pyproject.toml|uv.lock)$
-
 #   - repo: local
 #     hooks:
 #       - id: pytest
