@@ -45,7 +45,7 @@ fastapi-cli==0.0.8
     # via fastapi
 fastapi-cloud-cli==0.1.5
     # via fastapi-cli
-filelock==3.18.0
+filelock==3.20.1
     # via virtualenv
 greenlet==3.2.3
     # via sqlalchemy
